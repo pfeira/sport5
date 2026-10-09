@@ -530,13 +530,9 @@ class Sport5APIHandler(http.server.SimpleHTTPRequestHandler):
                         content = f.read()
 
                     # Injetar dinamicamente as pautas mais recentes em INITIAL_PAUTAS
-                    content = re.sub(
-                        r'const INITIAL_PAUTAS\s*=\s*\[.*?\];\s*(?=
-\s*(?:class Sport5App|const|let|var|function))',
-                        f'const INITIAL_PAUTAS = {json.dumps(db, ensure_ascii=False)};',
-                        content,
-                        flags=re.DOTALL
-                    )
+                    pattern = r'const INITIAL_PAUTAS\s*=\s*\[.*?\];\s*(?=\s*(?:class Sport5App|const|let|var|function))'
+                    replacement = 'const INITIAL_PAUTAS = ' + json.dumps(db, ensure_ascii=False) + ';'
+                    content = re.sub(pattern, replacement, content, flags=re.DOTALL)
 
                     content_bytes = content.encode("utf-8")
                     self.send_response(200)
